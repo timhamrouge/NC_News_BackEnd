@@ -55,4 +55,5 @@ function seedDB(DB_URL) {
     });
 }
 
+// this needs t be refactored so al data is passed down the promise chain.
 module.exports = seedDB;
