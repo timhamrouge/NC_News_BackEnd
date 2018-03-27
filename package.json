@@ -4,10 +4,11 @@
   "description": "Northcoders News API Sprint",
   "main": "index.js",
   "scripts": {
-    "test": "node seed/test.seed.js && mocha spec",
+    "test": "mocha spec",
     "start": "node index.js",
     "development": "nodemon listen.js",
-    "seed": "node seed/seed.js"
+    "seed:dev": "node seed/seed.development.js",
+    "seed:test": "node seed/test.seed.js"
   },
   "author": "",
   "license": "ISC",

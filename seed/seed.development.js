@@ -1,4 +1,3 @@
-process.env.NODE_ENV = "test";
 const mongoose = require("mongoose");
 mongoose.Promise = Promise;
 const { DB_URL } = require("../config");
@@ -8,6 +7,10 @@ mongoose
   .connect(DB_URL)
   .then(() => {
     console.log(`connected to ${DB_URL}`);
+    return mongoose.connection.dropDatabase();
+  })
+  .then(() => {
+    console.log("database dropped, seeding...");
     return seedDB(DB_URL);
   })
   .then(() => mongoose.disconnect())

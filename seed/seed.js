@@ -1,13 +1,10 @@
-process.env.NODE_ENV = process.env.NODE_ENV || "development";
-const mongoose = require("mongoose");
-mongoose.Promise = Promise;
 const { random, sample } = require("lodash");
 const faker = require("faker/locale/en_GB");
 const { articlesData, topicsData, usersData } = require(`./${
   process.env.NODE_ENV
 }Data`);
 const { Users, Articles, Comments, Topics } = require("../models");
-const DB = require("../config").DB_URL;
+const mongoose = require("mongoose");
 
 function seedRandomComments(userIds, articles) {
   const commentsArrays = [];
@@ -24,11 +21,12 @@ function seedRandomComments(userIds, articles) {
   return Comments.insertMany(commentsArrays);
 }
 
-function seedDB(DB) {
-  return Promise.all([
-    Topics.insertMany(topicsData),
-    Users.insertMany(usersData)
-  ])
+function seedDB(DB_URL) {
+  return mongoose.connection
+    .dropDatabase()
+    .then(() =>
+      Promise.all([Topics.insertMany(topicsData), Users.insertMany(usersData)])
+    )
     .then(([topics, users]) => {
       console.log(`seeded ${topics.length} topics and ${users.length} users`);
       const userIds = users.map(user => user._id);
@@ -50,32 +48,11 @@ function seedDB(DB) {
     })
     .then(([topics, userIds, articles]) => {
       console.log(`seeded ${articles.length} articles`);
-      return seedRandomComments(userIds, articles);
+      return Promise.all([seedRandomComments(userIds, articles)]);
     })
     .then(comments => {
       console.log(`seeded ${comments.length} random comments`);
     });
 }
-
-mongoose
-  .connect(DB)
-  .then(() => {
-    console.log(`connected to ${DB}`);
-    return mongoose.connection.dropDatabase();
-  })
-  .then(() => {
-    console.log("database dropped, seeding...");
-    return seedDB(DB);
-  })
-  .then(() => {
-    if (process.env.NODE_ENV === "development") {
-      console.log("disconnecting");
-      mongoose.disconnect();
-    }
-  })
-  .catch(err => {
-    console.log(err);
-    mongoose.disconnect();
-  });
 
 module.exports = seedDB;
