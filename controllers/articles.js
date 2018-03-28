@@ -34,4 +34,27 @@ function postComment(req, res, next) {
     .catch(next);
 }
 
-module.exports = { getAllArticles, getCommentsForArticle, postComment };
+function voteOnArticle(req, res, next) {
+  const { vote } = req.query;
+  const article_id = req.params.article_id;
+  let val;
+  if (vote === "up") val = 1;
+  if (vote === "down") val = -1;
+  return articles
+    .findOneAndUpdate(
+      { _id: article_id },
+      { $inc: { votes: val } },
+      { new: true }
+    )
+    .then(article => {
+      res.status(201).send({ article });
+    })
+    .catch(next);
+}
+
+module.exports = {
+  getAllArticles,
+  getCommentsForArticle,
+  postComment,
+  voteOnArticle
+};
