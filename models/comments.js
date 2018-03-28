@@ -7,7 +7,7 @@ const CommentSchema = new Schema({
     required: true
   },
   belongs_to: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "topics",
     required: true
   },
@@ -20,7 +20,7 @@ const CommentSchema = new Schema({
     default: 0
   },
   created_by: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "users",
     required: true
   }

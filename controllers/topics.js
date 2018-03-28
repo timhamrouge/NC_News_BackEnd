@@ -10,4 +10,15 @@ function getAllTopics(req, res, next) {
     .catch(next);
 }
 
-module.exports = { getAllTopics };
+function getArticlesByTopicId(req, res, next) {
+  let query = req.params.topic_id;
+  console.log(query);
+  articles
+    .find({ _id: 5abb588c30a59f19190609da })
+    .then(articles => {
+      res.send({ articles });
+    })
+    .catch(next);
+}
+
+module.exports = { getAllTopics, getArticlesByTopicId };

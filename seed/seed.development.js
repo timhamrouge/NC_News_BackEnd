@@ -7,10 +7,6 @@ mongoose
   .connect(DB_URL)
   .then(() => {
     console.log(`connected to ${DB_URL}`);
-    return mongoose.connection.dropDatabase();
-  })
-  .then(() => {
-    console.log("database dropped, seeding...");
     return seedDB(DB_URL);
   })
   .then(() => mongoose.disconnect())

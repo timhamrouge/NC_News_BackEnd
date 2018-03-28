@@ -4,18 +4,15 @@ const { expect } = require("chai");
 const request = require("supertest")(app);
 const mongoose = require("mongoose");
 const seedDB = require("../seed/seed.js");
-const { DB_URL } = require("../config");
 
 describe("/api", () => {
-  console.log("hello");
-  after(() => mongoose.disconnect());
-  let comments, users, articles, topics;
+  let topics, users, articles, comments;
   beforeEach(() => {
-    return seedDB(DB_URL).then(data => {
-      console.log(data);
+    return seedDB().then(data => {
+      return ([topics, users, articles, comments] = data);
     });
   });
-  // this should take a db url from config, and it should return an array of arrays of docuemnts
+  // after(() => mongoose.disconnect());
   describe("/", () => {
     it("GET returns status 200 and an object with information about the routes", () => {
       return request
@@ -23,6 +20,21 @@ describe("/api", () => {
         .expect(200)
         .then(res => {
           expect(res.body).to.be.an("object");
+        });
+    });
+  });
+  describe("/topics", () => {
+    it("GET returns status 200 and an object with all the topics", () => {
+      return request
+        .get("/api/topics")
+        .expect(200)
+        .then(res => {
+          expect(res.body).to.be.an("object");
+          expect(res.body.topics).to.be.an("array");
+          expect(res.body.topics[1]).to.be.an("object");
+          expect(res.body.topics[1]._id).to.eql(String(topics[1]._id));
+          expect(res.body.topics[0].title).to.eql("Mitch");
+          expect(res.body.topics[0].slug).to.eql("mitch");
         });
     });
   });
