@@ -12,9 +12,8 @@ function getAllTopics(req, res, next) {
 
 function getArticlesByTopicId(req, res, next) {
   let query = req.params.topic_id;
-  console.log(query);
   articles
-    .find({ _id: 5abb588c30a59f19190609da })
+    .find({ belongs_to: query })
     .then(articles => {
       res.send({ articles });
     })

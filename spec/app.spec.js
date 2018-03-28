@@ -12,7 +12,7 @@ describe("/api", () => {
       return ([topics, users, articles, comments] = data);
     });
   });
-  // after(() => mongoose.disconnect());
+  after(() => mongoose.disconnect());
   describe("/", () => {
     it("GET returns status 200 and an object with information about the routes", () => {
       return request

@@ -1,5 +1,4 @@
-const express = require("express");
-const topicsRouter = express.Router();
+const topicsRouter = require("express").Router();
 const {
   getAllTopics,
   getArticlesByTopicId
