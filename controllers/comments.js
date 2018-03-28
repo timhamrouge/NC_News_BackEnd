@@ -18,4 +18,15 @@ function voteOnComment(req, res, next) {
     .catch(next);
 }
 
-module.exports = { voteOnComment };
+function deleteComment(req, res, next) {
+  const commentId = req.params.comment_id;
+
+  return comments
+    .findByIdAndRemove(commentId)
+    .then(() => {
+      return res.send("comment deleted");
+    })
+    .catch(next);
+}
+
+module.exports = { voteOnComment, deleteComment };
