@@ -1,4 +1,4 @@
-const { DB_URL } = require("./config");
+const { DB_URL } = process.env.DB || require("./config");
 const app = require("express")();
 const mongoose = require("mongoose");
 mongoose.Promise = Promise;
