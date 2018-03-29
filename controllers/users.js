@@ -1,8 +1,7 @@
-const users = require("../models/users");
+const { Users, Comments, Articles } = require("../models");
 
 function getAllUsers(req, res, next) {
-  users
-    .find()
+  Users.find()
     .then(users => {
       res.send({ users });
     })
@@ -11,8 +10,7 @@ function getAllUsers(req, res, next) {
 
 function getUserByUsername(req, res, next) {
   const userName = req.params.username;
-  users
-    .findOne({ username: `${userName}` })
+  Users.findOne({ username: `${userName}` })
     .then(user => {
       res.send({ user });
     })

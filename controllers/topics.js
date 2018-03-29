@@ -1,9 +1,6 @@
-const topics = require("../models/topics");
-const articles = require("../models/articles");
-
+const { Users, Comments, Articles } = require("../models");
 function getAllTopics(req, res, next) {
-  topics
-    .find()
+  Topics.find()
     .then(topics => {
       res.send({ topics });
     })
@@ -12,8 +9,7 @@ function getAllTopics(req, res, next) {
 
 function getArticlesByTopicId(req, res, next) {
   let query = req.params.topic_id;
-  articles
-    .find({ belongs_to: query })
+  Articles.find({ belongs_to: query })
     .then(articles => {
       res.send({ articles });
     })
