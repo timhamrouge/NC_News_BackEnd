@@ -1,6 +1,9 @@
 const articles = require("../models/articles");
 const comments = require("../models/comments");
 const users = require("../models/users");
+const { Users, Comments, Articles } = require("../models");
+
+//refactor this^^^
 
 function getAllArticles(req, res, next) {
   articles
@@ -20,7 +23,6 @@ function getCommentsForArticle(req, res, next) {
 }
 
 function postComment(req, res, next) {
-  let userX;
   users
     .findOne()
     .then(user => {
@@ -47,7 +49,7 @@ function voteOnArticle(req, res, next) {
       { new: true }
     )
     .then(article => {
-      res.status(201).send({ article });
+      res.status(200).send({ article });
     })
     .catch(next);
 }

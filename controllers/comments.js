@@ -13,14 +13,13 @@ function voteOnComment(req, res, next) {
       { new: true }
     )
     .then(comment => {
-      res.status(201).send({ comment });
+      res.status(200).send({ comment });
     })
     .catch(next);
 }
 
 function deleteComment(req, res, next) {
   const commentId = req.params.comment_id;
-
   return comments
     .findByIdAndRemove(commentId)
     .then(() => {
