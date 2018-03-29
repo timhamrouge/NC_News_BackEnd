@@ -1,10 +1,13 @@
-const { DB_URL } = process.env.DB || require("./config");
+const DB_URL = process.env.DB || require("./config").DB_URL;
 const app = require("express")();
 const mongoose = require("mongoose");
 mongoose.Promise = Promise;
 const bodyParser = require("body-parser");
+// const cors = require("cors");
 
 const apiRouter = require("./routes/api");
+
+// app.use(cors());
 
 mongoose.connect(DB_URL).then(() => {
   console.log(`connected to ${DB_URL}`);
