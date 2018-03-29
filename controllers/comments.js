@@ -23,7 +23,7 @@ function deleteComment(req, res, next) {
   return comments
     .findByIdAndRemove(commentId)
     .then(() => {
-      return res.send("comment deleted");
+      return res.status(200).send({ msg: "comment deleted" });
     })
     .catch(next);
 }

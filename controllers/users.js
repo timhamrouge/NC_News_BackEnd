@@ -11,9 +11,12 @@ function getAllUsers(req, res, next) {
 
 function getUserByUsername(req, res, next) {
   const userName = req.params.username;
-  users.findOne({ username: `${userName}` }).then(user => {
-    res.send({ user }).catch(next);
-  });
+  users
+    .findOne({ username: `${userName}` })
+    .then(user => {
+      res.send({ user });
+    })
+    .catch(next);
 }
 
 module.exports = { getAllUsers, getUserByUsername };

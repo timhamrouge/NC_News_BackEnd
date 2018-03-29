@@ -58,12 +58,7 @@ function seedDB(DB_URL) {
     })
     .then(([topics, users, articles, comments]) => {
       console.log(`seeded ${comments.length} random comments`);
-      return Promise.all([
-        topics,
-        users,
-        articles,
-        seedRandomComments(users, articles)
-      ]);
+      return Promise.all([topics, users, articles, comments]);
     });
 }
 

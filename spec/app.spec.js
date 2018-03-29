@@ -7,7 +7,8 @@ const seedDB = require("../seed/seed.js");
 
 describe("/api", () => {
   let topics, users, articles, comments;
-  beforeEach(() => {
+  beforeEach(function() {
+    this.timeout(5000);
     return seedDB().then(data => {
       return ([topics, users, articles, comments] = data);
     });
@@ -117,7 +118,7 @@ describe("/api", () => {
         });
     });
   });
-  describe("articles/:article_id/comments", () => {
+  describe("/articles/:article_id/comments", () => {
     it("GET returns a 200 status code and all comments for a given article", () => {
       return request
         .get(`/api/articles/${articles[1]._id}/comments`)
@@ -126,7 +127,7 @@ describe("/api", () => {
           let body = res.body.comments;
           expect(res.body).to.be.an("object");
           expect(body).to.be.an("array");
-          expect(body[1])
+          expect(body[0])
             .to.be.an("object")
             .that.has.all.keys(
               "__v",
@@ -137,15 +138,15 @@ describe("/api", () => {
               "created_at",
               "votes"
             );
-          expect(body[1].votes).to.be.an("number");
-          expect(body[1].created_at).to.be.an("number");
-          expect(body[1]._id)
+          expect(body[0].votes).to.be.an("number");
+          expect(body[0].created_at).to.be.an("number");
+          expect(body[0]._id)
             .to.be.an("string")
             .with.length(24);
-          expect(body[2].created_by)
+          expect(body[0].created_by)
             .to.be.an("string")
             .with.length(24);
-          expect(body[2].belongs_to)
+          expect(body[0].belongs_to)
             .to.be.an("string")
             .with.length(24)
             .to.equal(String(articles[1]._id));
@@ -159,7 +160,6 @@ describe("/api", () => {
         .send({ comment: "example comment body" })
         .expect(201)
         .then(res => {
-          console.log(res.body);
           expect(res.body)
             .to.be.an("object")
             .that.has.all.keys(
@@ -187,14 +187,13 @@ describe("/api", () => {
         });
     });
   });
-  describe("articles/:article_id?vote", () => {
+  describe("/articles/:article_id?vote", () => {
     it("PUT returns a 201 status and the article with the votes increased by one with the query 'up'", () => {
       const id = articles[1]._id;
       return request
         .put(`/api/articles/${id}?vote=up`)
         .expect(200)
         .then(res => {
-          console.log(res.body);
           const article = res.body.article;
           expect(res.body)
             .to.be.an("object")
@@ -235,7 +234,6 @@ describe("/api", () => {
         .put(`/api/articles/${id}?vote=down`)
         .expect(200)
         .then(res => {
-          console.log(res.body);
           const article = res.body.article;
           expect(res.body)
             .to.be.an("object")
@@ -271,14 +269,13 @@ describe("/api", () => {
         });
     });
   });
-  describe("comments/:comment_id?vote", () => {
+  describe("/comments/:comment_id?vote", () => {
     it("PUT returns a 200 status and the comment with the votes increased by one with the query 'up'", () => {
       const id = comments[1]._id;
       return request
         .put(`/api/comments/${id}?vote=up`)
         .expect(200)
         .then(res => {
-          console.log(res.body);
           const comment = res.body.comment;
           expect(res.body)
             .to.be.an("object")
@@ -315,7 +312,6 @@ describe("/api", () => {
         .put(`/api/comments/${id}?vote=down`)
         .expect(200)
         .then(res => {
-          console.log(res.body);
           const comment = res.body.comment;
           expect(res.body)
             .to.be.an("object")
@@ -347,18 +343,87 @@ describe("/api", () => {
         });
     });
   });
+  describe("/comments/:comment_id", () => {
+    it("DELETE returns a 200 status and a message object to confirm deletion of the given comment", () => {
+      const id = comments[1]._id;
+      const commentsLength = comments.length;
+      return request
+        .delete(`/api/comments/${id}`)
+        .expect(200)
+        .then(res => {
+          expect(res.body)
+            .to.be.an("object")
+            .that.has.all.keys("msg");
+          expect(res.body.msg)
+            .to.be.an("string")
+            .to.equal("comment deleted");
+        });
+    });
+  });
+  describe("/users/:username", () => {
+    it("GET returns a 200 status and a user object", () => {
+      const userName = users[1].username;
+      return request
+        .get(`/api/users/${userName}`)
+        .expect(200)
+        .then(res => {
+          console.log(res.body.user);
+          const user = res.body.user;
+          expect(res.body)
+            .to.be.an("object")
+            .that.has.all.keys("user");
+          expect(user)
+            .to.be.an("object")
+            .that.has.all.keys("__v", "_id", "avatar_url", "name", "username");
+          expect(user._id)
+            .to.be.an("string")
+            .with.length(24);
+          expect(user.username)
+            .to.be.an("string")
+            .with.length(11)
+            .to.equal("dedekind561");
+          expect(user.name)
+            .to.be.an("string")
+            .with.length(5)
+            .to.equal("mitch");
+          expect(user.avatar_url).to.be.an("string");
+        });
+    });
+  });
+  describe("/users/:username", () => {
+    it("GET returns a 200 status and an object with all users", () => {
+      return request
+        .get("/api/users")
+        .expect(200)
+        .then(res => {
+          console.log(res.body);
+          const users = res.body.users;
+          expect(res.body)
+            .to.be.an("object")
+            .that.has.all.keys("users");
+          expect(users)
+            .to.be.an("array")
+            .with.length(2);
+          expect(users[1])
+            .to.be.an("object")
+            .that.has.all.keys("_id", "username", "name", "avatar_url", "__v");
+          expect(users[1]._id)
+            .to.be.an("string")
+            .with.length(24);
+          expect(users[0].username)
+            .to.be.an("string")
+            .with.length(13)
+            .to.equal("butter_bridge");
+          expect(users[0].name)
+            .to.be.an("string")
+            .with.length(5)
+            .to.equal("jonny");
+          expect(users[0].avatar_url)
+            .to.be.an("string")
+            .to.equal(
+              "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+            );
+        });
+    });
+  });
 });
-// describe("/:article_id/?vote", () => {
-//   it("PUT returns status 200 and increments the votes on an article if query vote=up, returning the updated article", () => {
-//     const article_id = usefulData.articles[0]._id;
-//     return request
-//       .put(`/api/articles/${article_id}?vote=up`)
-//       .expect(200)
-//       .then(res => {
-//         const { article } = res.body;
-//         expect(article).to.be.an("object");
-//         expect(article.votes)
-//           .to.be.a("number")
-//           .equal(1);
-//       });
-//   });
