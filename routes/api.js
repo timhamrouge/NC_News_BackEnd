@@ -5,10 +5,7 @@ const articlesRouter = require("./articles");
 const commentsRouter = require("./comments");
 const usersRouter = require("./users");
 
-apiRouter.get("/", (req, res) => {
-  console.log("hi tim");
-  res.render("pages/api.ejs");
-});
+apiRouter.use(express.static("pages"));
 
 apiRouter.use("/topics", topicsRouter);
 apiRouter.use("/articles", articlesRouter);
