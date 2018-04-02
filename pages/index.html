@@ -20,19 +20,21 @@
   <h3>Returns all the articles for a certain topic</h3>
   <h2>GET /api/articles</h2>
   <h3>Returns all the articles</h3>
+  <h2>GET /api/articles/:article_id</h2>
+  <h3>Returns an article, specified by it's id</h3>
   <h2>GET /api/articles/:article_id/comments</h2>
   <h3>Returns all the comments for an individual article</h3>
   <h2>POST /api/articles/:article_id/comments</h2>
-  <h3>Adds a new comment to an article. This route requires a JSON body with a key/value pair for comment, belongs_to and created_by,
-    must be valid ids e.g: {"comment": "This is my new comment", "belongs_to": "
-    <article_id>", created_by: "
-      <user_id>"}</h3>
+  <h3>Adds a new comment to an article. This route requires a JSON body with a key/value pair for 'comment', belongs_to and created_by,
+    must be valid ids e.g: {"comment": "This is my new comment"}</h3>
   <h2>PUT /api/articles/:article_id</h2>
   <h3>Increments or Decrements the votes of an article by one. This route requires a vote query of 'up' or 'down' e.g: https://nc-news-timhamrouge.herokuapp.com/api/articles/:article_id?vote=up</h3>
   <h2>PUT /api/comments/:comment_id</h2>
   <h3>Increments or Decrements the votes of a comment by one. This route requires a vote query of 'up' or 'down' e.g: https://nc-news-timhamrouge.herokuapp.com/api/comments/:comment_id?vote=down</h3>
   <h2>DELETE /api/comments/:comment_id</h2>
   <h3>Deletes a comment</h3>
+  <h2>GET /api/users</h2>
+  <h3>Returns all users</h3>
   <h2>GET /api/users/:user_id</h2>
   <h3>Returns the profile data for the specified user.</h3>
 
