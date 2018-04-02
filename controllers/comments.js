@@ -11,7 +11,12 @@ function voteOnComment(req, res, next) {
     { $inc: { votes: val } },
     { new: true }
   )
+    .lean()
+    .populate("created_by", "username -_id")
+    .populate("belongs_to", "title -_id")
     .then(comment => {
+      comment.belongs_to = comment.belongs_to.title;
+      comment.created_by = comment.created_by.username;
       res.status(200).send({ comment });
     })
     .catch(next);

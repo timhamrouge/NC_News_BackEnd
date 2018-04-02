@@ -8,7 +8,7 @@ const seedDB = require("../seed/seed.js");
 describe("/api", () => {
   let topics, users, articles, comments;
   beforeEach(function() {
-    this.timeout(5000);
+    // this.timeout(10000);
     return seedDB().then(data => {
       return ([topics, users, articles, comments] = data);
     });
@@ -76,7 +76,7 @@ describe("/api", () => {
           expect(body.articles[1].body)
             .to.be.an("string")
             .to.equal("Who are we kidding, there is only one, and it's Mitch!");
-          expect(body.articles[1].belongs_to).to.eql(String(topics[0]._id));
+          expect(body.articles[1].belongs_to).to.eql("Mitch");
           expect(body.articles[0]._id.length).to.equal(24);
         });
     });
@@ -101,7 +101,8 @@ describe("/api", () => {
               "body",
               "created_by",
               "title",
-              "votes"
+              "votes",
+              "comments"
             );
           expect(body.articles[3].votes).to.be.an("number");
           expect(body.articles[3].title)
@@ -113,8 +114,43 @@ describe("/api", () => {
           expect(body.articles[2].title).to.equal(
             "They're not exactly dogs, are they?"
           );
-          expect(body.articles[3].created_by.length).to.equal(24);
-          expect(body.articles[3].belongs_to.length).to.equal(24);
+          expect(body.articles[3].created_by).to.be.an("string");
+          expect(body.articles[3].belongs_to).to.be.an("string");
+        });
+    });
+  });
+  describe("/articles/:article_id", () => {
+    it("GET returns a 200 status code and the article specified by it's id", () => {
+      return request
+        .get(`/api/articles/${articles[1]._id}`)
+        .expect(200)
+        .then(res => {
+          let article = res.body.article;
+          expect(res.body)
+            .to.be.an("object")
+            .with.all.keys("article");
+          expect(article)
+            .to.be.an("object")
+            .that.has.all.keys(
+              "__v",
+              "_id",
+              "belongs_to",
+              "body",
+              "created_by",
+              "title",
+              "votes",
+              "comments"
+            );
+          expect(article._id)
+            .to.be.an("string")
+            .with.length(24);
+          expect(article.votes).to.be.an("number");
+          expect(article.title).to.be.an("string");
+          expect(article.body).to.be.an("string");
+          expect(article.created_by).to.be.an("string");
+          expect(article.belongs_to).to.be.an("string");
+          expect(article.__v).to.equal(0);
+          expect(article.comments).to.be.an("number");
         });
     });
   });
@@ -143,16 +179,14 @@ describe("/api", () => {
           expect(body[0]._id)
             .to.be.an("string")
             .with.length(24);
-          expect(body[0].created_by)
-            .to.be.an("string")
-            .with.length(24);
+          expect(body[0].created_by).to.be.an("string");
           expect(body[0].belongs_to)
             .to.be.an("string")
-            .with.length(24)
-            .to.equal(String(articles[1]._id));
+            .to.eql("7 inspirational thought leaders from Manchester UK")
+            .with.length(50);
         });
     });
-    it("POST returns a 201 status and an object with the new comment", () => {
+    it("POST returns a 200 status and an object with the new comment", () => {
       const id = articles[1]._id;
       return request
         .post(`/api/articles/${id}/comments`)
@@ -188,7 +222,7 @@ describe("/api", () => {
     });
   });
   describe("/articles/:article_id?vote", () => {
-    it("PUT returns a 201 status and the article with the votes increased by one with the query 'up'", () => {
+    it("PUT returns a 200 status and the article with the votes increased by one with the query 'up'", () => {
       const id = articles[1]._id;
       return request
         .put(`/api/articles/${id}?vote=up`)
@@ -220,15 +254,11 @@ describe("/api", () => {
           expect(article.body)
             .to.be.an("string")
             .to.equal("Who are we kidding, there is only one, and it's Mitch!");
-          expect(article.created_by)
-            .to.be.an("string")
-            .with.length(24);
-          expect(article.belongs_to)
-            .to.be.an("string")
-            .with.length(24);
+          expect(article.created_by).to.be.an("string");
+          expect(article.belongs_to).to.be.an("string");
         });
     });
-    it("PUT returns a 201 status and the article with the votes increased by one with the query 'down'", () => {
+    it("PUT returns a 200 status and the article with the votes increased by one with the query 'down'", () => {
       const id = articles[1]._id;
       return request
         .put(`/api/articles/${id}?vote=down`)
@@ -260,12 +290,8 @@ describe("/api", () => {
           expect(article.body)
             .to.be.an("string")
             .to.equal("Who are we kidding, there is only one, and it's Mitch!");
-          expect(article.created_by)
-            .to.be.an("string")
-            .with.length(24);
-          expect(article.belongs_to)
-            .to.be.an("string")
-            .with.length(24);
+          expect(article.created_by).to.be.an("string");
+          expect(article.belongs_to).to.be.an("string");
         });
     });
   });
@@ -298,15 +324,11 @@ describe("/api", () => {
             .to.equal(String(id));
           expect(comment.created_at).to.be.an("number");
           expect(comment.body).to.be.an("string");
-          expect(comment.created_by)
-            .to.be.an("string")
-            .with.length(24);
-          expect(comment.belongs_to)
-            .to.be.an("string")
-            .with.length(24);
+          expect(comment.created_by).to.be.an("string");
+          expect(comment.belongs_to).to.be.an("string");
         });
     });
-    it("PUT returns a 200 status and the comment with the votes increased by one with the query 'down'", () => {
+    it("PUT returns a 200 status and the comment with the votes decreased by one with the query 'down'", () => {
       const id = comments[1]._id;
       return request
         .put(`/api/comments/${id}?vote=down`)
@@ -334,12 +356,8 @@ describe("/api", () => {
             .to.equal(String(id));
           expect(comment.created_at).to.be.an("number");
           expect(comment.body).to.be.an("string");
-          expect(comment.created_by)
-            .to.be.an("string")
-            .with.length(24);
-          expect(comment.belongs_to)
-            .to.be.an("string")
-            .with.length(24);
+          expect(comment.created_by).to.be.an("string");
+          expect(comment.belongs_to).to.be.an("string");
         });
     });
   });
@@ -367,7 +385,6 @@ describe("/api", () => {
         .get(`/api/users/${userName}`)
         .expect(200)
         .then(res => {
-          console.log(res.body.user);
           const user = res.body.user;
           expect(res.body)
             .to.be.an("object")
@@ -396,7 +413,6 @@ describe("/api", () => {
         .get("/api/users")
         .expect(200)
         .then(res => {
-          console.log(res.body);
           const users = res.body.users;
           expect(res.body)
             .to.be.an("object")
