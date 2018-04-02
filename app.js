@@ -15,8 +15,6 @@ mongoose.connect(DB_URL).then(() => {
 
 app.use(bodyParser.json());
 
-app.use("/", (req, res, next) => res.send({ msg: "hello world" }));
-
 app.use("/api", apiRouter);
 
 app.use("/*", (req, res, next) => next({ status: 404 }));
