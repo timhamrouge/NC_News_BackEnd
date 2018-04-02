@@ -28,7 +28,7 @@ function getAllArticles(req, res, next) {
 
 function getArticleById(req, res, next) {
   let query = req.params.article_id;
-  Articles.findOne((_id = query))
+  Articles.findOne({ _id: query })
     .lean()
     .populate("created_by", "username -_id")
     .populate("belongs_to", "title -_id")
@@ -47,7 +47,10 @@ function getArticleById(req, res, next) {
       article.comments = commentCount[article._id];
       return res.send({ article });
     })
-    .catch(next);
+    .catch(err => {
+      if (err.name === "CastError") err.status = 400;
+      next(err);
+    });
 }
 
 function getCommentsForArticle(req, res, next) {
@@ -64,7 +67,10 @@ function getCommentsForArticle(req, res, next) {
       });
       res.send({ comments });
     })
-    .catch(next);
+    .catch(err => {
+      if (err.name === "CastError") err.status = 400;
+      next(err);
+    });
 }
 
 function postComment(req, res, next) {
@@ -79,12 +85,16 @@ function postComment(req, res, next) {
     .then(comment => {
       res.status(201).json(comment);
     })
-    .catch(next);
+    .catch(err => {
+      if (err.name === "ValidationError") err.status = 400;
+      next(err);
+    });
 }
 
 function voteOnArticle(req, res, next) {
   const { vote } = req.query;
   const article_id = req.params.article_id;
+  console.log(vote, article_id);
   let val;
   if (vote === "up") val = 1;
   if (vote === "down") val = -1;
@@ -101,7 +111,11 @@ function voteOnArticle(req, res, next) {
       article.belongs_to = article.belongs_to.title;
       res.status(200).send({ article });
     })
-    .catch(next);
+    .catch(err => {
+      if (err.name === "MongoError") err.status = 400;
+      if (err.name === "CastError") err.status = 400;
+      next(err);
+    });
 }
 
 module.exports = {

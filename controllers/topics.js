@@ -22,7 +22,10 @@ function getArticlesByTopicId(req, res, next) {
       });
       res.send({ articles });
     })
-    .catch(next);
+    .catch(err => {
+      // if (err.name === "CastError") err.status = 400;
+      next(err);
+    });
 }
 
 module.exports = { getAllTopics, getArticlesByTopicId };

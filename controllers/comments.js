@@ -19,7 +19,11 @@ function voteOnComment(req, res, next) {
       comment.created_by = comment.created_by.username;
       res.status(200).send({ comment });
     })
-    .catch(next);
+    .catch(err => {
+      if (err.name === "MongoError") err.status = 400;
+      if (err.name === "CastError") err.status = 400;
+      next(err);
+    });
 }
 
 function deleteComment(req, res, next) {
@@ -28,7 +32,10 @@ function deleteComment(req, res, next) {
     .then(() => {
       return res.status(200).send({ msg: "comment deleted" });
     })
-    .catch(next);
+    .catch(err => {
+      if (err.name === "CastError") err.status = 400;
+      next(err);
+    });
 }
 
 module.exports = { voteOnComment, deleteComment };
