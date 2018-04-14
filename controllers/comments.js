@@ -21,7 +21,7 @@ function voteOnComment(req, res, next) {
     })
     .catch(err => {
       if (err.name === "MongoError") err.status = 400;
-      if (err.name === "CastError") err.status = 400;
+      if (err.name === "CastError") err.status = 404;
       next(err);
     });
 }

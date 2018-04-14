@@ -20,10 +20,13 @@ function getArticlesByTopicId(req, res, next) {
         article.belongs_to = article.belongs_to.title;
         return article;
       });
+      if (articles.length === 0)
+        return res.send({
+          msg: "No articles found, please check your input and try again"
+        });
       res.send({ articles });
     })
     .catch(err => {
-      // if (err.name === "CastError") err.status = 400;
       next(err);
     });
 }
