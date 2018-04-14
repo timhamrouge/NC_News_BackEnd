@@ -3,7 +3,7 @@ const { Users, Comments, Articles } = require("../models");
 function voteOnComment(req, res, next) {
   const { vote } = req.query;
   const comment_id = req.params.comment_id;
-  let val;
+  let val = 0;
   if (vote === "up") val = 1;
   if (vote === "down") val = -1;
   return Comments.findOneAndUpdate(

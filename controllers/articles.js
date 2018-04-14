@@ -48,6 +48,7 @@ function getArticleById(req, res, next) {
       return res.send({ article });
     })
     .catch(err => {
+      if (err.name === "TypeError") err.status = 404;
       if (err.name === "CastError") err.status = 400;
       next(err);
     });
@@ -65,9 +66,14 @@ function getCommentsForArticle(req, res, next) {
         comment.belongs_to = comment.belongs_to.title;
         return comment;
       });
+      if (comments.length === 0)
+        return res.send({
+          msg: "No comments found, please check your input and try again"
+        });
       res.send({ comments });
     })
     .catch(err => {
+      console.log(err);
       if (err.name === "CastError") err.status = 400;
       next(err);
     });
@@ -94,8 +100,7 @@ function postComment(req, res, next) {
 function voteOnArticle(req, res, next) {
   const { vote } = req.query;
   const article_id = req.params.article_id;
-  console.log(vote, article_id);
-  let val;
+  let val = 0;
   if (vote === "up") val = 1;
   if (vote === "down") val = -1;
   return Articles.findOneAndUpdate(
@@ -112,6 +117,8 @@ function voteOnArticle(req, res, next) {
       res.status(200).send({ article });
     })
     .catch(err => {
+      console.log(err);
+      if (err.name === "TypeError") err.status = 404;
       if (err.name === "MongoError") err.status = 400;
       if (err.name === "CastError") err.status = 400;
       next(err);
