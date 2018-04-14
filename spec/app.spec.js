@@ -8,22 +8,12 @@ const seedDB = require("../seed/seed.js");
 describe("/api", () => {
   let topics, users, articles, comments;
   beforeEach(function() {
-    // this.timeout(10000);
+    this.timeout(10000);
     return seedDB().then(data => {
       return ([topics, users, articles, comments] = data);
     });
   });
   after(() => mongoose.disconnect());
-  describe("/", () => {
-    it("GET returns status 200 and an object with information about the routes", () => {
-      return request
-        .get("/api")
-        .expect(200)
-        .then(res => {
-          expect(res.body).to.be.an("object");
-        });
-    });
-  });
   describe("/topics", () => {
     it("GET returns status 200 and an object with all the topics", () => {
       return request

@@ -1,54 +1,107 @@
-## Northcoders News API
+# Northcoders News API
 
-### Background
+### Introduction
 
-We will be building the API which to use in the Northcoders News Sprint during the Front End block of the course.
+Northcoders News is a Reddit-style website, with a RESTful API. It has a database of articles created by users, with functionality to add comments to articles. It is possible to vote (up or down) on all articles and comments. For further information on the API's routes check the Routes heading below. The API is built using [Node.js](https://nodejs.org/en/) (v9.11.1), [MongoDB](https://www.mongodb.com/) (v3.6.3), [Express](https://expressjs.com/) (v4.14.0) and [Mongoose](http://mongoosejs.com/) (v5.0.11). The testing suite is comprised of [Mocha](https://mochajs.org/) (v5.1.0), [Chai Assertion Library](http://www.chaijs.com/) (v4.1.2) and the npm package [Supertest](https://www.npmjs.com/package/supertest) (v3.0.0). **Try it out on Heroku [here](https://nc-news-timhamrouge.herokuapp.com/api/).** The Database is hosted on [MLab](https://mlab.com/).
 
-Our database will be MongoDB. Your Mongoose models have been created for you so that you can see what the data should look like.
+## Getting Started
 
-We have also built a functioning API at http://northcoders-news-api.herokuapp.com/.
+In order to get a local copy of the project for testing and development purposes, please follow these steps:
 
-Look closely at the response you get for each route on http://northcoders-news-api.herokuapp.com/ You will notice that we also send data such as the comment count for each article. You will need to think carefully about how to do this in your API.
+#### Installation
 
-### Mongoose Documentation
+Ensure you have the following installed:
 
-The below are all model methods that you call on your models.
+[Node.js](https://nodejs.org/en/)
 
-* [find](http://mongoosejs.com/docs/api.html#model_Model.find)
-* [findOne](http://mongoosejs.com/docs/api.html#model_Model.findOne)
-* [findOneAndUpdate](http://mongoosejs.com/docs/api.html#model_Model.findOneAndUpdate)
-* [findOneAndRemove](http://mongoosejs.com/docs/api.html#model_Model.findOneAndRemove)
-* [findById](http://mongoosejs.com/docs/api.html#model_Model.findById)
-* [findByIdAndUpdate](http://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate)
-* [findByIdAndRemove](http://mongoosejs.com/docs/api.html#model_Model.findByIdAndRemove)
-* [update](http://mongoosejs.com/docs/api.html#model_Model.update)
+```
+npm --v
+```
 
-There are also some methods that can be called on the documents that get returned. These are:
+[MongoDB](https://www.mongodb.com/download-center#community)
 
-* [remove](http://mongoosejs.com/docs/api.html#model_Model-remove)
-* [save](http://mongoosejs.com/docs/api.html#model_Model-save)
-* [count](http://mongoosejs.com/docs/api.html#model_Model.count)
+```
+mongo --version
+```
 
-### Step 1 - Seeding
+[git](https://git-scm.com/downloads)
 
-The test database has already been seeded for you, so you only need to write a seed file for the development database.
+```
+git --version
+```
 
-1.  The data for users, articles and topics has been provided in CSV format (comma separated values). This is a common export format for spreadsheets. You will need to parse this data to make it available within your JavaScript application.
-2.  You will need to seed the topics, followed by the articles and the users. Each article should belong to a topic, referenced by a topic's \_id property. Each article should also have a random number of comments. Each comment should have been created by a random user (referenced by their \_id property) and should also belong to a specific article (referenced by its \_id property too). Use a library such as [faker](https://www.npmjs.com/package/faker) or [chance](https://www.npmjs.com/package/chance) to generate random comments.
+Clone this repository:
 
-### Step 2 - Building and Testing
+```
+git clone https://github.com/timhamrouge/BE-FT-northcoders-news
+```
 
-1.  Build your Express App
-2.  Mount an API Router onto your app
-3.  Define the routes described below
-4.  Define controller functions for each of your routes
-5.  Use proper project configuration from the offset, being sure to treat development and test differently.
-6.  Test each route as you go. Remember to test the happy and the unhappy paths! Make sure your error messages are helpful and your error status codes are chosen correctly. Remember to seed the test database using the seeding function and make the saved data available to use within your test suite.
-7.  Once you have all your routes start to tackle responding with the vote and comment counts on article requests like this http://northcoders-news-api.herokuapp.com/api/articles
+Navigate (cd) into the cloned repository, then install all dependencies using node:
 
-**HINT** Make sure to drop and reseed your test database with every test. This will make it much easier to keep track of your data throughout. In order for this to work, you are going to need to keep track of the MongoIDs your seeded docs have been given. In order to do this, you might want to consider what your seed file returns, and how you can use this in your tests.
+```
+ npm install
+```
+
+Run MongoDB to give the API access to the local database:
+
+```
+mongod
+```
+
+NOTE: At this point you will need to create a config folder at root level for the test and development process.env.NODE_ENV.
+
+process.env.NODE_ENV will need to default to 'development'. You can do this by creating an index file that will fetch the DB_URL and PORT from the appropriate config file, depending on the node enviroment that is being run. You can do this with the following code:
+
+```
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
+module.exports = require(`./${process.env.NODE_ENV}`);
+```
+
+In a _new_ terminal window, seed the development database:
+
+```
+npm run seed:dev
+```
+
+Run the server on your local machine:
+
+```
+npm run development
+```
+
+This will allow the API to be accessed through the PORT specified in your development config file.
+
+### Running the tests
+
+In order to run the tests on the various endpoint you will need to install:
+
+[Mocha](https://mochajs.org/)
+
+```
+npm i mocha
+```
+
+The [Chai Assertion Library](http://www.chaijs.com/)
+
+```
+npm i chai
+```
+
+The npm package [Supertest](https://www.npmjs.com/package/supertest)
+
+```
+npm i supertest
+```
+
+There is no need to seed the test database before running the tests and it will be seeded before every test is run, nor will you need to set a PORT for test in your config folder as supertest will handle this with it's virtual server. Should you wish to seed the test database manually, you can with the following command:
+
+```
+npm t
+```
 
 ### Routes
+
+The following routes are available on the API:
 
 ```
 GET /api
@@ -73,6 +126,12 @@ GET /api/articles
 ```
 
 Returns all the articles
+
+```
+GET /api/:article_id
+```
+
+Get an individual article
 
 ```
 GET /api/articles/:article_id/comments
@@ -108,17 +167,17 @@ DELETE /api/comments/:comment_id
 Deletes a comment
 
 ```
+GET /api/users
+```
+
+Returns a JSON object with all users
+
+```
 GET /api/users/:username
 ```
 
-Returns a JSON object with the profile data for the specified user.
+Returns a JSON object with the profile data for the specified user
 
-### Step 3 - Hosting
+## Authors
 
-Once you are happy with your seed/dev file, prepare your project for production. You will need to seed the development data to mLab, and host the API on Heroku. If you've forgotten how to do this, you may want to look at this tutorial! https://www.sitepoint.com/deploy-rest-api-in-30-mins-mlab-heroku/
-
-### Step 4 - Preparing for your review and portfolio
-
-Finally, you should write a README for this project (and remove this one). The README should be broken down like this: https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
-
-It should also include the link where your herokuapp is hosted.
+* **Tim Hamrouge**
