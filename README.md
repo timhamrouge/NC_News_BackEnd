@@ -73,7 +73,7 @@ This will allow the API to be accessed through the PORT specified in your develo
 
 ### Running the tests
 
-In order to run the tests on the various endpoint you will need to install:
+In order to run the tests on the various endpoints you will need to install:
 
 [Mocha](https://mochajs.org/)
 
@@ -94,6 +94,12 @@ npm i supertest
 ```
 
 There is no need to seed the test database before running the tests and it will be seeded before every test is run, nor will you need to set a PORT for test in your config folder as supertest will handle this with it's virtual server. Should you wish to seed the test database manually, you can with the following command:
+
+```
+npm run seed:text
+```
+
+To run the test, run the following:
 
 ```
 npm t
