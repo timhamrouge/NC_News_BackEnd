@@ -9,7 +9,7 @@
     "development": "nodemon listen.js",
     "seed:dev": "node seed/development.seed.js",
     "seed:test": "node seed/test.seed.js",
-    "seed:prod": "NODE_ENV=production node seed/seed.development.js"
+    "seed:prod": "NODE_ENV=production node seed/development.seed.js"
   },
   "author": "",
   "license": "ISC",
