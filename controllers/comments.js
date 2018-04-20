@@ -28,26 +28,14 @@ function voteOnComment(req, res, next) {
 
 function deleteComment(req, res, next) {
   const commentId = req.params.comment_id;
-  return Comments.findByIdAndRemove(commentId).then(() => {
-    return Comments.find()
-      .lean()
-      .populate("created_by", "username -_id")
-      .populate("belongs_to", "title -_id")
-      .then(commentDocs => {
-        return (comments = commentDocs.map(comment => {
-          comment.created_by = comment.created_by.username;
-          comment.belongs_to = comment.belongs_to.title;
-          return comment;
-        }));
-      })
-      .then(comments => {
-        res.send({ comments });
-      })
-      .catch(err => {
-        if (err.name === "CastError") err.status = 400;
-        next(err);
-      });
-  });
+  return Comments.findByIdAndRemove(commentId)
+    .then(() => {
+      res.send({ msg: "Comment Deleted" });
+    })
+    .catch(err => {
+      if (err.name === "CastError") err.status = 400;
+      next(err);
+    });
 }
 
 module.exports = { voteOnComment, deleteComment };

@@ -362,8 +362,10 @@ describe("/api", () => {
           console.log(res.body);
           expect(res.body)
             .to.be.an("object")
-            .that.has.all.keys("comments");
-          expect(res.body.comments).to.be.an("array");
+            .that.has.all.keys("msg");
+          expect(res.body.msg)
+            .to.be.an("string")
+            .to.equal("Comment Deleted");
         });
     });
   });
