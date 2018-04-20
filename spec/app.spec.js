@@ -359,12 +359,11 @@ describe("/api", () => {
         .delete(`/api/comments/${id}`)
         .expect(200)
         .then(res => {
+          console.log(res.body);
           expect(res.body)
             .to.be.an("object")
-            .that.has.all.keys("msg");
-          expect(res.body.msg)
-            .to.be.an("string")
-            .to.equal("comment deleted");
+            .that.has.all.keys("comments");
+          expect(res.body.comments).to.be.an("array");
         });
     });
   });

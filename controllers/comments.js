@@ -30,7 +30,10 @@ function deleteComment(req, res, next) {
   const commentId = req.params.comment_id;
   return Comments.findByIdAndRemove(commentId)
     .then(() => {
-      return res.status(200).send({ msg: "comment deleted" });
+      return Comments.find();
+    })
+    .then(comments => {
+      res.send({ comments });
     })
     .catch(err => {
       if (err.name === "CastError") err.status = 400;
